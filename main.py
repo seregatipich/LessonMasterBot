@@ -1,22 +1,22 @@
-import os
+from os import getenv
+from asyncio import run
 
-from aiogram import Bot, Dispatcher, executor, types, Router
-from aiogram import F
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 
-
-load_dotenv()
-
-bot = Bot(token=os.getenv('TELEGRAM_TOKEN'))
-dp = Dispatcher()
-router = Router()
+from handlers import registration
 
 
-@router.message(Command('start'))
-async def welcome(message: types.Message) -> None:
-    message.reply('sjdiajsif')
+async def start():
+    load_dotenv()
+    bot = Bot(token=getenv('TELEGRAM_TOKEN'))
+    dp = Dispatcher()
+
+    dp.include_router(registration.reg_router)
+
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    run(start())
