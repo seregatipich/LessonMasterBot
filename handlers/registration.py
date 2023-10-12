@@ -1,16 +1,19 @@
 from aiogram import F, Router, types
-from aiogram.filters import Command
-
-from keyboards.start_registration import welcome_kb
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import ReplyKeyboardRemove
 
 reg_router = Router()
 
 
-@reg_router.message(Command('start'))
-async def welcome(message: types.Message) -> None:
-    await message.reply('Hi! how is it going?')
+class RegisterUser(StatesGroup):
+    name = State()
+    students_amount = State()
 
 
-@reg_router.message()
-async def registration(message: types.Message) -> None:
-    await message.reply('Hi!', reply_markup=welcome_kb())
+@reg_router.message(F.text == 'Register!')
+async def ask_name(message: types.Message) -> None:
+    await message.reply("What's your name?", reply_markup=ReplyKeyboardRemove())
+
+
+
